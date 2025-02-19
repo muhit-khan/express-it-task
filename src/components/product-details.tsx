@@ -1,9 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import axios from "axios"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { ArrowLeft, Loader2 } from "lucide-react"
+import { getProduct } from "@/lib/storage"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,9 +12,22 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 interface Product {
   _id: string
   name: string
-  price: number
+  price: string
   description: string
-  image: string
+  category: {
+    _id: string
+    name: string
+  }
+  images: {
+    public_id: string
+    secure_url: string
+    optimizeUrl: string
+  }[]
+  video: {
+    public_id: string
+    secure_url: string
+  }
+  status: boolean
 }
 
 export default function ProductDetails({ id }: { id: string }) {
@@ -23,19 +37,23 @@ export default function ProductDetails({ id }: { id: string }) {
   const [error, setError] = useState("")
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const loadProduct = () => {
       try {
-        const response = await axios.get(`https://glore-bd-backend-node-mongo.vercel.app/api/product/${id}`)
-        setProduct(response.data)
+        const foundProduct = getProduct(id)
+        if (foundProduct) {
+          setProduct(foundProduct)
+        } else {
+          setError("Product not found")
+        }
       } catch (err) {
         setError("Failed to load product details")
-        console.error("Error fetching product:", err)
+        console.error("Error loading product:", err)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchProduct()
+    loadProduct()
   }, [id])
 
   if (loading) {
@@ -66,16 +84,23 @@ export default function ProductDetails({ id }: { id: string }) {
           Back to Products
         </Button>
         <div className="aspect-video relative overflow-hidden rounded-lg">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={product.image || "/placeholder.svg"} alt={product.name} className="object-cover w-full h-full" />
+          <Image
+            src={product.images[0]?.secure_url || "/placeholder.svg"}
+            alt={product.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 1200px) 100vw, 1200px"
+            priority
+          />
         </div>
       </CardHeader>
       <CardContent>
         <CardTitle className="text-2xl mb-4">{product.name}</CardTitle>
         <p className="text-muted-foreground">{product.description}</p>
+        <p className="text-sm text-muted-foreground mt-2">Category: {product.category.name}</p>
       </CardContent>
       <CardFooter>
-        <p className="text-2xl font-bold">৳{product.price.toLocaleString()}</p>
+        <p className="text-2xl font-bold">৳{parseInt(product.price).toLocaleString()}</p>
       </CardFooter>
     </Card>
   )

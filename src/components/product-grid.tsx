@@ -3,20 +3,35 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import Link from "next/link"
+import Image from "next/image"
 import { Loader2 } from "lucide-react"
+import { setProducts as setStorageProducts } from "@/lib/storage"
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface Product {
   _id: string
   name: string
-  price: number
+  price: string
   description: string
-  image: string
+  category: {
+    _id: string
+    name: string
+  }
+  images: {
+    public_id: string
+    secure_url: string
+    optimizeUrl: string
+  }[]
+  video: {
+    public_id: string
+    secure_url: string
+  }
+  status: boolean
 }
 
 export default function ProductGrid() {
-  const [products, setProducts] = useState<Product[]>([])
+  const [products, setProductsState] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
@@ -24,7 +39,13 @@ export default function ProductGrid() {
     const fetchProducts = async () => {
       try {
         const response = await axios.get("https://glore-bd-backend-node-mongo.vercel.app/api/product")
-        setProducts(response.data)
+        if (Array.isArray(response.data.data)) {
+          setStorageProducts(response.data.data) // Save to localStorage
+          setProductsState(response.data.data)
+        } else {
+          setError("Invalid data format received")
+          console.error("Invalid data format:", response.data)
+        }
       } catch (err) {
         setError("Failed to load products")
         console.error("Error fetching products:", err)
@@ -55,11 +76,12 @@ export default function ProductGrid() {
           <Card className="h-full hover:shadow-lg transition-shadow">
             <CardHeader>
               <div className="aspect-square relative overflow-hidden rounded-lg">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={product.image || "/placeholder.svg"}
+                <Image
+                  src={product.images[0]?.secure_url || "/placeholder.svg"}
                   alt={product.name}
-                  className="object-cover w-full h-full"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </div>
             </CardHeader>
@@ -68,7 +90,7 @@ export default function ProductGrid() {
               <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{product.description}</p>
             </CardContent>
             <CardFooter>
-              <p className="font-semibold">৳{product.price.toLocaleString()}</p>
+              <p className="font-semibold">৳{parseInt(product.price).toLocaleString()}</p>
             </CardFooter>
           </Card>
         </Link>

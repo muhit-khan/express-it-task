@@ -44,6 +44,9 @@ export default function StoreForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
+      domain: "",
+      email: "",
       country: "Bangladesh",
       category: "Fashion",
       currency: "BDT",
@@ -56,10 +59,10 @@ export default function StoreForm() {
       const response = await axios.get(
         `https://interview-task-green.vercel.app/task/domains/check/${domain}.expressitbd.com`,
       )
-      return response.data
+      return response.data.data.taken
     } catch (error) {
       console.error("Domain check failed:", error)
-      return false
+      return true // Assume domain is taken on error
     } finally {
       setIsChecking(false)
     }
@@ -69,33 +72,35 @@ export default function StoreForm() {
     setIsSubmitting(true)
     try {
       // Check domain availability first
-      const isDomainAvailable = await checkDomain(values.domain)
+      const isDomainTaken = await checkDomain(values.domain)
 
-      if (!isDomainAvailable) {
-        // If domain is available, submit the form
-        const response = await axios.post("https://interview-task-green.vercel.app/task/stores/create", {
-          name: values.name,
-          currency: values.currency,
-          country: values.country,
-          domain: values.domain,
-          category: values.category,
-          email: values.email,
-        })
-
-        if (response.status === 200) {
-          toast({
-            title: "Success!",
-            description: "Store created successfully",
-          })
-          router.push("/products")
-        }
-      } else {
+      if (isDomainTaken) {
         form.setError("domain", {
           type: "manual",
           message: "Domain not available",
         })
+        return;
+      }
+
+      // If domain is not taken, proceed with form submission
+      const response = await axios.post("https://interview-task-green.vercel.app/task/stores/create", {
+        name: values.name,
+        currency: values.currency,
+        country: values.country,
+        domain: values.domain,
+        category: values.category,
+        email: values.email,
+      })
+
+      if (response.status === 200) {
+        toast({
+          title: "Success!",
+          description: "Store created successfully",
+        })
+        router.push("/products")
       }
     } catch (error) {
+      console.error("Store creation failed:", error)
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",
@@ -146,8 +151,10 @@ export default function StoreForm() {
                   </FormLabel>
                   <FormControl>
                     <div className="flex">
-                      <Input {...field} />
-                      <div className="flex items-center px-3 border rounded-r bg-muted">.expressitbd.com</div>
+                      <Input {...field} disabled={isChecking} />
+                      <div className="flex items-center px-3 border rounded-r bg-muted">
+                        {isChecking ? "Checking..." : ".expressitbd.com"}
+                      </div>
                     </div>
                   </FormControl>
                   <FormDescription>
