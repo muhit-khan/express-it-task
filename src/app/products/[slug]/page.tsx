@@ -27,7 +27,7 @@ export default async function ProductPage({ params: { slug } }: Props) {
                     minSize={0.6}
                     maxSize={1.4}
                     particleDensity={100}
-                    className="w-full h-full"
+                    className="w-full h-full fixed"
                     particleColor="#FFFFFF"
                 />
             </div>

@@ -71,12 +71,12 @@ export default function ProductGrid() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
+    <div className="flex flex-wrap gap-4 p-4">
       {products.map((product) => (
-        <Link href={`/products/${createSlug(product.name)}`} key={product._id}>
+        <Link href={`/products/${createSlug(product.name)}`} key={product._id} className="w-full sm:w-[calc(50%-8px)] md:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)]">
           <Card className="h-full backdrop-blur-md bg-white/15 border-white/20 hover:bg-white/20 transition-all duration-200 group">
-            <CardHeader>
-              <div className="aspect-square relative overflow-hidden rounded-xl group-hover:scale-105 transition-transform duration-200">
+            <CardHeader className="pb-2">
+              <div className="aspect-[4/3] relative overflow-hidden rounded-xl group-hover:scale-105 transition-transform duration-200">
                 <Image
                   src={product.images[0]?.secure_url || "/placeholder.svg"}
                   alt={product.name}
@@ -86,9 +86,9 @@ export default function ProductGrid() {
                 />
               </div>
             </CardHeader>
-            <CardContent>
-              <CardTitle className="line-clamp-2 text-white">{product.name}</CardTitle>
-              <p className="text-sm text-white/70 mt-2 line-clamp-3">{product.description}</p>
+            <CardContent className="pb-2">
+              <CardTitle className="line-clamp-2 text-white text-lg">{product.name}</CardTitle>
+              <p className="text-sm text-white/70 mt-1 line-clamp-2">{product.description}</p>
             </CardContent>
             <CardFooter>
               <p className="font-semibold text-white">৳{parseInt(product.price).toLocaleString()}</p>

@@ -17,12 +17,12 @@ export default function ProductsPage() {
           minSize={0.6}
           maxSize={1.4}
           particleDensity={100}
-          className="w-full h-full"
+          className="w-full h-full fixed"
           particleColor="#FFFFFF"
         />
       </div>
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-8">Our Products</h1>
+        <h1 className="text-3xl text-center font-bold mb-8 pt-12">Our Products</h1>
         <ProductGrid />
       </div>
     </main>
