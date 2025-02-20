@@ -4,7 +4,8 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { ArrowLeft, Loader2 } from "lucide-react"
-import { getProduct } from "@/lib/storage"
+import { getProductBySlug } from "@/lib/storage"
+// import { createSlug } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,7 +31,7 @@ interface Product {
   status: boolean
 }
 
-export default function ProductDetails({ id }: { id: string }) {
+export default function ProductDetails({ slug }: { slug: string }) {
   const router = useRouter()
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
@@ -39,7 +40,7 @@ export default function ProductDetails({ id }: { id: string }) {
   useEffect(() => {
     const loadProduct = () => {
       try {
-        const foundProduct = getProduct(id)
+        const foundProduct = getProductBySlug(slug)
         if (foundProduct) {
           setProduct(foundProduct)
         } else {
@@ -54,7 +55,7 @@ export default function ProductDetails({ id }: { id: string }) {
     }
 
     loadProduct()
-  }, [id])
+  }, [slug])
 
   if (loading) {
     return (
@@ -77,13 +78,17 @@ export default function ProductDetails({ id }: { id: string }) {
   }
 
   return (
-    <Card>
+    <Card className="backdrop-blur-md bg-white/10 border-white/20 shadow-2xl">
       <CardHeader>
-        <Button onClick={() => router.back()} variant="ghost" className="mb-4">
+        <Button
+          onClick={() => router.back()}
+          variant="ghost"
+          className="mb-4 text-white hover:bg-white/20"
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Products
         </Button>
-        <div className="aspect-video relative overflow-hidden rounded-lg">
+        <div className="aspect-video relative overflow-hidden rounded-xl">
           <Image
             src={product.images[0]?.secure_url || "/placeholder.svg"}
             alt={product.name}
@@ -95,12 +100,12 @@ export default function ProductDetails({ id }: { id: string }) {
         </div>
       </CardHeader>
       <CardContent>
-        <CardTitle className="text-2xl mb-4">{product.name}</CardTitle>
-        <p className="text-muted-foreground">{product.description}</p>
-        <p className="text-sm text-muted-foreground mt-2">Category: {product.category.name}</p>
+        <CardTitle className="text-2xl mb-4 text-white">{product.name}</CardTitle>
+        <p className="text-white/70">{product.description}</p>
+        <p className="text-sm text-white/50 mt-2">Category: {product.category.name}</p>
       </CardContent>
       <CardFooter>
-        <p className="text-2xl font-bold">৳{parseInt(product.price).toLocaleString()}</p>
+        <p className="text-2xl font-bold text-white">৳{parseInt(product.price).toLocaleString()}</p>
       </CardFooter>
     </Card>
   )

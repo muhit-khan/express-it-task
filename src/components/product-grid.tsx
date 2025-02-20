@@ -6,6 +6,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Loader2 } from "lucide-react"
 import { setProducts as setStorageProducts } from "@/lib/storage"
+import { createSlug } from "@/lib/utils"
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -70,12 +71,12 @@ export default function ProductGrid() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
       {products.map((product) => (
-        <Link href={`/products/${product._id}`} key={product._id}>
-          <Card className="h-full hover:shadow-lg transition-shadow">
+        <Link href={`/products/${createSlug(product.name)}`} key={product._id}>
+          <Card className="h-full backdrop-blur-md bg-white/15 border-white/20 hover:bg-white/20 transition-all duration-200 group">
             <CardHeader>
-              <div className="aspect-square relative overflow-hidden rounded-lg">
+              <div className="aspect-square relative overflow-hidden rounded-xl group-hover:scale-105 transition-transform duration-200">
                 <Image
                   src={product.images[0]?.secure_url || "/placeholder.svg"}
                   alt={product.name}
@@ -86,11 +87,11 @@ export default function ProductGrid() {
               </div>
             </CardHeader>
             <CardContent>
-              <CardTitle className="line-clamp-2">{product.name}</CardTitle>
-              <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{product.description}</p>
+              <CardTitle className="line-clamp-2 text-white">{product.name}</CardTitle>
+              <p className="text-sm text-white/70 mt-2 line-clamp-3">{product.description}</p>
             </CardContent>
             <CardFooter>
-              <p className="font-semibold">৳{parseInt(product.price).toLocaleString()}</p>
+              <p className="font-semibold text-white">৳{parseInt(product.price).toLocaleString()}</p>
             </CardFooter>
           </Card>
         </Link>

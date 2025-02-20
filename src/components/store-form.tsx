@@ -112,12 +112,12 @@ export default function StoreForm() {
   }
 
   return (
-    <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-      <div className="flex flex-col space-y-1.5 p-6">
-        <h3 className="text-2xl font-semibold leading-none tracking-tight">Create a store</h3>
-        <p className="text-sm text-muted-foreground">Add your basic store information and complete the setup</p>
+    <div className="backdrop-blur-md bg-white/15 rounded-2xl border border-white/20 shadow-2xl">
+      <div className="flex flex-col space-y-1.5 p-8 text-center">
+        <h3 className="text-4xl font-semibold leading-none tracking-tight text-white">Create a store</h3>
+        <p className="text-lg text-white/70">Add your basic store information and complete the setup</p>
       </div>
-      <div className="p-6 pt-0">
+      <div className="p-8 pt-0">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -132,7 +132,7 @@ export default function StoreForm() {
                   <FormControl>
                     <Input placeholder="How'd you like to call your store?" {...field} />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-white/70">
                     A great store name is a big part of your success. Make sure it aligns with your brand and products.
                   </FormDescription>
                   <FormMessage />
@@ -151,13 +151,13 @@ export default function StoreForm() {
                   </FormLabel>
                   <FormControl>
                     <div className="flex">
-                      <Input {...field} disabled={isChecking} />
+                      <Input placeholder="uniqueDomainName" className="rounded-r-none" {...field} disabled={isChecking} />
                       <div className="flex items-center px-3 border rounded-r bg-muted">
                         {isChecking ? "Checking..." : ".expressitbd.com"}
                       </div>
                     </div>
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-white/70">
                     A SEO-friendly store name is a crucial part of your success. Make sure it aligns with your brand and
                     products.
                   </FormDescription>
@@ -183,9 +183,11 @@ export default function StoreForm() {
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="Bangladesh">Bangladesh</SelectItem>
+                      <SelectItem value="US">United States</SelectItem>
+                      <SelectItem value="UK">United Kingdom</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
+                  <FormDescription className="text-white/70">
                     Set your store&apos;s default location so we can optimize store access and speed for your customers.
                   </FormDescription>
                   <FormMessage />
@@ -210,9 +212,10 @@ export default function StoreForm() {
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="Fashion">Fashion</SelectItem>
+                      <SelectItem value="Groceries">Groceries</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
+                  <FormDescription className="text-white/70">
                     Set your store&apos;s default category so that we can optimize store access and speed for your
                     customers.
                   </FormDescription>
@@ -238,9 +241,11 @@ export default function StoreForm() {
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="BDT">BDT (Taka)</SelectItem>
+                      <SelectItem value="USD">USD (US Dollar)</SelectItem>
+                      <SelectItem value="GBP">GBP (Pound Sterling)</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>This is the main currency you wish to sell in.</FormDescription>
+                  <FormDescription className="text-white/70">This is the main currency you wish to sell in.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -258,7 +263,7 @@ export default function StoreForm() {
                   <FormControl>
                     <Input placeholder="you@example.com" {...field} />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-white/70">
                     This is the email you&apos;ll use to send notifications to and receive orders from customers.
                   </FormDescription>
                   <FormMessage />
@@ -266,7 +271,11 @@ export default function StoreForm() {
               )}
             />
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm transition-all duration-200"
+              disabled={isSubmitting}
+            >
               {isSubmitting ? "Creating store..." : "Create store"}
             </Button>
           </form>
