@@ -1,32 +1,14 @@
 import type { Metadata } from "next"
 import ProductDetails from "@/components/product-details"
 import { SparklesCore } from "@/components/ui/sparkles"
-import { getProductBySlug } from "@/lib/storage"
 
-interface Props {
-    params: Promise<{ slug: string }> | { slug: string }
+export const metadata: Metadata = {
+    title: 'Product Details | Express IT BD',
+    description: 'View product details',
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const resolvedParams = await params
-    const product = getProductBySlug(resolvedParams.slug)
-
-    if (!product) {
-        return {
-            title: 'Product Not Found | Express IT BD',
-            description: 'The requested product could not be found.',
-        }
-    }
-
-    return {
-        title: `${product.name} | Express IT BD`,
-        description: product.description,
-    }
-}
-
-export default async function ProductPage({ params }: Props) {
-    const resolvedParams = await params
-    const decodedSlug = decodeURIComponent(resolvedParams.slug)
+export default function ProductPage({ params }: { params: { slug: string } }) {
+    const decodedSlug = decodeURIComponent(params.slug)
 
     return (
         <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col items-center justify-center p-4">

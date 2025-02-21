@@ -4,10 +4,10 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { ArrowLeft, Heart, Loader2, ShoppingCart, Play, Share2 } from "lucide-react"
-import { getProductBySlug } from "@/lib/storage"
+import { getProductBySlug, setProducts, createSlug } from "@/lib/storage"
+import axios from "axios"
 
 import { Button } from "@/components/ui/button"
-// import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 
 interface Product {
@@ -43,11 +43,25 @@ export default function ProductDetails({ slug }: { slug: string }) {
     const loadProduct = async () => {
       try {
         const foundProduct = getProductBySlug(slug)
+
         if (foundProduct) {
           setProduct(foundProduct)
           setSelectedImage(foundProduct.images[0]?.secure_url)
         } else {
-          setError("Product not found")
+          const response = await axios.get("/api/products")
+          if (response.data?.data) {
+            const products = response.data.data
+            // Save to localStorage
+            setProducts(products)
+            // Find the product by slug
+            const product = products.find((p: Product) => createSlug(p.name) === slug)
+            if (product) {
+              setProduct(product)
+              setSelectedImage(product.images[0]?.secure_url)
+            } else {
+              setError("Product not found")
+            }
+          }
         }
       } catch (err) {
         setError("Failed to load product details")
