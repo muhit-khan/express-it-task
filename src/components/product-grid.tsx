@@ -39,7 +39,7 @@ export default function ProductGrid() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("https://glore-bd-backend-node-mongo.vercel.app/api/product")
+        const response = await axios.get("/api/products")
         if (Array.isArray(response.data.data)) {
           setStorageProducts(response.data.data) // Save to localStorage
           setProductsState(response.data.data)

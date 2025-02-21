@@ -8,7 +8,6 @@ import { getProductBySlug, setProducts, createSlug } from "@/lib/storage"
 import axios from "axios"
 
 import { Button } from "@/components/ui/button"
-// import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 
 interface Product {
@@ -49,7 +48,7 @@ export default function ProductDetails({ slug }: { slug: string }) {
           setProduct(foundProduct)
           setSelectedImage(foundProduct.images[0]?.secure_url)
         } else {
-          const response = await axios.get("https://glore-bd-backend-node-mongo.vercel.app/api/product")
+          const response = await axios.get("/api/products")
           if (response.data?.data) {
             const products = response.data.data
             // Save to localStorage
