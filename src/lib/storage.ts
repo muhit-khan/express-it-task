@@ -28,11 +28,15 @@ export const createSlug = (name: string): string => {
 };
 
 export const setProducts = (products: StorageProduct[]) => {
-    localStorage.setItem('products', JSON.stringify(products));
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('products', JSON.stringify(products));
+    }
 };
 
 export const getProductBySlug = (slug: string): StorageProduct | null => {
     try {
+        if (typeof window === 'undefined') return null;
+
         const products = localStorage.getItem('products');
         if (!products) return null;
 
